@@ -1,17 +1,18 @@
 package dev.enjarai.mls;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import dev.enjarai.mls.config.ModConfig;
+import dev.enjarai.mls.config.ModConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
-import dev.enjarai.mls.config.ModConfigScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.Validate;
 
 import java.io.InputStream;
@@ -23,11 +24,6 @@ import java.util.Objects;
 public class ModerateLoadingScreen implements ClientModInitializer {
     public static final String MODID = "moderate-loading-screen";
     public static final ModConfig CONFIG = ModConfig.createAndLoad();
-
-    @Override
-    public void onInitializeClient() {
-        ConfigScreen.registerProvider(MODID, (parent) -> new ModConfigScreen(id("config"), CONFIG, parent));
-    }
 
     // Construct list of mod icons, main principles copied from mod menu
     public static ArrayList<Identifier> compileIconList() {
@@ -41,7 +37,7 @@ public class ModerateLoadingScreen implements ClientModInitializer {
             ModMetadata metadata = mod.getMetadata();
 
             String path = metadata.getIconPath(128).orElse("assets/" + metadata.getId() + "/icon.png");
-            NativeImageBackedTexture texture = getIconTexture(mod, path);
+            DynamicTexture texture = getIconTexture(mod, path);
 
             // Ignore blacklisted mods
             for (String i : blacklistRegex) {
@@ -70,7 +66,7 @@ public class ModerateLoadingScreen implements ClientModInitializer {
             if (texture != null) {
                 Identifier iconLocation = id(metadata.getId() + "_icon");
 
-                MinecraftClient.getInstance().getTextureManager().registerTexture(iconLocation, texture);
+                Minecraft.getInstance().getTextureManager().register(iconLocation, texture);
                 result.add(iconLocation);
             }
         }
@@ -78,13 +74,13 @@ public class ModerateLoadingScreen implements ClientModInitializer {
         return result;
     }
 
-    private static NativeImageBackedTexture getIconTexture(ModContainer iconSource, String iconPath) {
+    private static DynamicTexture getIconTexture(ModContainer iconSource, String iconPath) {
         try {
-            Path path = iconSource.getPath(iconPath);
+            Path path = iconSource.findPath(iconPath).get();
             try (InputStream inputStream = Files.newInputStream(path)) {
                 NativeImage image = NativeImage.read(Objects.requireNonNull(inputStream));
                 Validate.validState(image.getHeight() == image.getWidth(), "Must be square icon");
-                return new NativeImageBackedTexture(/*? if >1.21.4 {*/ () -> iconSource.getMetadata().getName() /*?}*/, image);
+                return new DynamicTexture(/*? if >1.21.4 {*/ () -> iconSource.getMetadata().getName() /*?}*/, image);
             }
 
         } catch (Throwable t) {
@@ -95,7 +91,7 @@ public class ModerateLoadingScreen implements ClientModInitializer {
     // https://stackoverflow.com/questions/45321050/java-string-matching-with-wildcards
     private static String createRegexFromGlob(String glob) {
         StringBuilder out = new StringBuilder("^");
-        for(int i = 0; i < glob.length(); ++i) {
+        for (int i = 0; i < glob.length(); ++i) {
             final char c = glob.charAt(i);
             switch (c) {
                 case '*' -> out.append(".*");
@@ -111,9 +107,16 @@ public class ModerateLoadingScreen implements ClientModInitializer {
 
     public static Identifier id(String path) {
         /*? if >=1.21 {*/
-        return Identifier.of(MODID, path);
+        return Identifier.fromNamespaceAndPath(MODID, path);
         /*?} else {*//*
         return new Identifier(MODID, path);
         *//*?} */
+    }
+
+    @Override
+    public void onInitializeClient() {
+        ClientLifecycleEvents.CLIENT_STARTED.register((_) -> {
+            ConfigScreen.create(CONFIG, new ModConfigScreen(id("config"), CONFIG, null));
+        });
     }
 }

@@ -17,17 +17,20 @@
   "entrypoints": {
     "client": [
       "dev.enjarai.mls.ModerateLoadingScreen"
+    ], "modmenu": [
+      "dev.enjarai.mls.config.ModMenuIntegration"
     ]
   },
   "mixins": [
     "moderate-loading-screen.mixins.json"
   ],
   "suggests": {
-    "modmenu": "*"
   },
   "depends": {
     "owo-lib": "*",
-    "cicada": ">=0.6.0 <1.0.0"
+    "cicada": ">=0.6.0",
+    "modmenu": "*",
+    "fabric-api": "*"
   },
 
   "accessWidener" : "moderate-loading-screen.accesswidener",

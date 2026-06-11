@@ -1,6 +1,9 @@
 package dev.enjarai.mls.config;
 
-import io.wispforest.owo.config.annotation.*;
+import io.wispforest.owo.config.annotation.Config;
+import io.wispforest.owo.config.annotation.Nest;
+import io.wispforest.owo.config.annotation.RangeConstraint;
+import io.wispforest.owo.config.annotation.SectionHeader;
 import io.wispforest.owo.ui.core.Color;
 
 import java.util.ArrayList;

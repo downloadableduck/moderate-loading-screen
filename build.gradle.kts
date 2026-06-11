@@ -1,6 +1,6 @@
 plugins {
-    id("fabric-loom")
-    id("me.modmuss50.mod-publish-plugin") version "0.4.4"
+    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    //id("me.modmuss50.mod-publish-plugin") version "0.4.4"
 }
 
 class ModData {
@@ -11,20 +11,25 @@ class ModData {
 }
 
 val mod = ModData()
-val mcVersion = stonecutter.current.version
+//val mcVersion = stonecutter.current.version
 val mcDep = property("mod.mc_dep").toString()
 
-version = "${mod.version}+$mcVersion"
+version = "${mod.version}+26.1"
 group = mod.group
 base { archivesName.set(mod.id) }
 
 repositories {
     maven("https://maven.enjarai.dev/releases")
+    maven("https://maven.fabricmc.net/")
     maven("https://maven.enjarai.dev/mirrors")
     maven("https://maven.terraformersmc.com")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.wispforest.io")
     maven("https://maven.kikugie.dev/releases")
+    maven("https://maven.wispforest.io/releases/")
+    maven("https://jitpack.io")
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 val javaVersion : Int = (property("deps.java") as String).toInt()
@@ -34,16 +39,16 @@ tasks.withType<JavaCompile> {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${mcVersion}")
-    mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
-    modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    minecraft("com.mojang:minecraft:${property("minecraft_version")}")
+    //mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
+    implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
+    implementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
-    modImplementation("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
+    implementation("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
         exclude(group = "net.fabricmc.fabric-api")
     }
-    annotationProcessor(modImplementation("io.wispforest:owo-lib:${property("deps.owo")}")!!)
+    implementation("io.wispforest:owo-lib:${property("deps.owo")}")!!
     include("io.wispforest:owo-sentinel:${property("deps.owo")}")
 
 //    include(modRuntimeOnly("dev.kikugie:crash-pipe:0.1.0")!!)
@@ -57,13 +62,13 @@ loom {
     }
 }
 
-if (stonecutter.current.isActive) {
+/*if (stonecutter.current.isActive) {
     rootProject.tasks.register("buildActive") {
         group = "project"
 
         dependsOn(tasks.named("build"))
     }
-}
+}*/
 
 tasks.processResources {
     inputs.property("id", mod.id)
@@ -89,9 +94,9 @@ java {
     withSourcesJar()
 }
 
-publishMods {
+/*publishMods {
     file = tasks.remapJar.get().archiveFile
-    displayName = "${mod.version} for $mcVersion"
+    displayName = "${mod.version} for $project.minecraft_version"
     version = project.version.toString()
     changelog = rootProject.file("CHANGELOG.md").readText()
     type = STABLE
@@ -153,6 +158,21 @@ publishMods {
 
             commitish = "main" // property('git_branch')
             tagName = project.version.toString()
+        }
+    }
+}*/
+
+tasks.withType<ProcessResources> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourceSets {
+    main {
+        java {
+            setSrcDirs(listOf("src/main/java"))
+        }
+        resources {
+            setSrcDirs(listOf("src/main/resources"))
         }
     }
 }

@@ -1,18 +1,18 @@
 package dev.enjarai.mls.mixin;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import java.util.function.Function;
-
 /*? if >=1.21.2 {*/
-@Mixin(net.minecraft.client.gui.DrawContext.class)
+@Mixin(GuiGraphicsExtractor.class)
 public interface DrawContextAccessor {
-    @Invoker("drawTexturedQuad")
+    @Invoker("innerBlit")
     void loadingScreen$drawTexturedQuad(
-            Function<Identifier, RenderLayer> renderLayers,
+            RenderPipeline renderPipeline,
             Identifier sprite,
             int x1, int x2, int y1, int y2,
             float u1, float u2, float v1, float v2,

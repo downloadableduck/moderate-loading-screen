@@ -1,28 +1,37 @@
 package dev.enjarai.mls;
 
 import dev.enjarai.mls.mixin.DrawContextAccessor;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+import org.joml.Matrix3x2fStack;
 
-// This exists to provide a unified interface for rendering
-public class DrawContextWrapper {
-    /*? if >=1.21.2 {*/
-    private final net.minecraft.client.gui.DrawContext context;
-    public DrawContextWrapper(net.minecraft.client.gui.DrawContext context) {
-        this.context = context;
+/**
+ * @param context ? if >=1.21.2 {
+ */ // This exists to provide a unified interface for rendering
+public record DrawContextWrapper(GuiGraphicsExtractor context) {
+
+    public Matrix3x2fStack matrices() {
+        return context.pose();
     }
 
-    public MatrixStack matrices() {
-        return context.getMatrices();
-    }
-
-    public void drawTexturedQuad(Identifier identifier, int x0, int x1, int y0, int y1) {
+    public void drawTexturedQuad(Identifier identifier, int x0, int x1, int y0, int y1, int alpha) {
         ((DrawContextAccessor) context).loadingScreen$drawTexturedQuad(
-                RenderLayer::getGuiTextured, identifier,
+                RenderPipelines.GUI_TEXTURED, identifier,
                 x0, x1, y0, y1,
-                0.0f, 1.0f, 0.0f, 1.0f, 0xffffffff
+                0.0f, 1.0f, 0.0f, 1.0f, calculateColor(alpha)
         );
+    }
+
+    private int calculateColor(int alpha) {
+
+        if (alpha < 0) alpha = 0;
+
+        int bye = (int) ((float) -alpha * 255.0f);
+
+        int baseRgb = 0xffffff;
+
+        return (bye << 24) | (baseRgb & 0xffffff);
     }
     /*?} else if >=1.20 {*//*
     private final net.minecraft.client.gui.DrawContext context;
