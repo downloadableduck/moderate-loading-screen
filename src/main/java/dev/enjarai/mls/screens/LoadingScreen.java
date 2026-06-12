@@ -4,6 +4,7 @@ import com.mojang.math.MatrixUtil;
 import dev.enjarai.mls.DrawContextWrapper;
 import dev.enjarai.mls.ModerateLoadingScreen;
 import dev.enjarai.mls.config.Orientation;
+import dev.enjarai.mls.config.ScreenTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.joml.Matrix3x2fStack;
@@ -12,16 +13,18 @@ import org.joml.Matrix4f;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static dev.enjarai.mls.ModerateLoadingScreen.CONFIG;
+
 public abstract class LoadingScreen {
-    protected final int patchSize = ModerateLoadingScreen.CONFIG.iconSize();
-    protected final Orientation orientation = ModerateLoadingScreen.CONFIG.orientation();
+    protected final int patchSize = CONFIG.iconSize();
+    protected final Orientation orientation = CONFIG.orientation();
     protected final Minecraft client;
     protected final ArrayList<Identifier> icons;
     protected final Random random = new Random();
     protected final ArrayList<Patch> patches = new ArrayList<>();
     protected double patchTimer = 0f;
-    protected boolean tater = ModerateLoadingScreen.CONFIG.showTater();
-    protected boolean modsOnlyOnce = ModerateLoadingScreen.CONFIG.modsOnlyOnce();
+    protected boolean tater = CONFIG.showTater();
+    protected boolean modsOnlyOnce = CONFIG.modsOnlyOnce();
 
     public LoadingScreen(Minecraft client) {
         this.client = client;
@@ -96,14 +99,22 @@ public abstract class LoadingScreen {
 
         //147 because anything less makes them flash back in the startup screen, anything more makes them dissappear to quickly
         //in the not startup screen
-       if (ticksActive >= 250) {
+        /*if (CONFIG.screenType() == ScreenTypes.SNOWFLAKES) {
+            if (ticksActive >= 450) {
 
-            for (Patch patch : patches) {
-                //for some reason seems to operate in reverse, use += to make it go down since im lazy
-                //nope i fixed it
-                patch.alpha -= 5;
+                for (Patch patch : patches) {
+                    //for some reason seems to operate in reverse, use += to make it go down since im lazy
+                    //nope i fixed it
+                    patch.alpha -= 5;
+                }
             }
-        }
+        } else {
+            if (ticksActive >= 500) {
+                for (Patch patch : patches) {
+                    patch.alpha -=5;
+                }
+            }
+        }*/
 
         //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         /*? if <1.21.5*/ /*RenderSystem.enableBlend();*/

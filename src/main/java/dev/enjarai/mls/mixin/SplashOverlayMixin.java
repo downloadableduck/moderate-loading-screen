@@ -36,28 +36,6 @@ public abstract class SplashOverlayMixin extends Overlay {
 
     private float ticksActive = 0;
 
-    @Redirect(
-            method = "extractRenderState",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/util/Util;getMillis()J"
-            )
-    )
-    private long dilateFadeOutTime() {
-        long realNow = Util.getMillis();
-
-        if (this.fadeOutStart <= -1L) {
-            return realNow;
-        }
-
-        float timeDilationFactor = 2.0f;
-
-        long realElapsed = realNow - this.fadeOutStart;
-        long fakedElapsed = (long) (realElapsed / timeDilationFactor);
-
-        return this.fadeOutStart + fakedElapsed;
-    }
-
     @Shadow
     private static int replaceAlpha(int color, int alpha) {
         throw new UnsupportedOperationException("Shadowed method somehow called outside mixin. Exorcise your computer.");
