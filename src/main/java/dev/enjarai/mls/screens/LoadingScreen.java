@@ -96,8 +96,8 @@ public abstract class LoadingScreen {
 
         //147 because anything less makes them flash back in the startup screen, anything more makes them dissappear to quickly
         //in the not startup screen
-        if (ticksActive >= 200) {
-            System.out.println(patches.getFirst().alpha);
+       if (ticksActive >= 250) {
+
             for (Patch patch : patches) {
                 //for some reason seems to operate in reverse, use += to make it go down since im lazy
                 //nope i fixed it

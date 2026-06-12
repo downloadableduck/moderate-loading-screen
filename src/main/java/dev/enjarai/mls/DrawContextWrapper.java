@@ -15,7 +15,8 @@ public record DrawContextWrapper(GuiGraphicsExtractor context) {
         return context.pose();
     }
 
-    public void drawTexturedQuad(Identifier identifier, int x0, int x1, int y0, int y1, int alpha) {
+    public void drawTexturedQuad(Identifier identifier, int x0, int x1, int y0, int y1,
+                                 int alpha) {
         ((DrawContextAccessor) context).loadingScreen$drawTexturedQuad(
                 RenderPipelines.GUI_TEXTURED, identifier,
                 x0, x1, y0, y1,
@@ -24,14 +25,14 @@ public record DrawContextWrapper(GuiGraphicsExtractor context) {
     }
 
     private int calculateColor(int alpha) {
-
         if (alpha < 0) alpha = 0;
+        if (alpha > 100) alpha = 100;
 
-        int bye = (int) ((float) -alpha * 255.0f);
+        int alphaByte = Math.round((alpha / 100.0f) * 255.0f);
 
         int baseRgb = 0xffffff;
 
-        return (bye << 24) | (baseRgb & 0xffffff);
+        return (alphaByte << 24) | (baseRgb & 0xffffff);
     }
     /*?} else if >=1.20 {*//*
     private final net.minecraft.client.gui.DrawContext context;

@@ -14,7 +14,7 @@ public class SnowFlakesScreen extends LoadingScreen {
     public void createPatch(Identifier texture) {
         patches.add(new Patch(
                 random.nextDouble() * (getScreenWidth() + patchSize),
-                -patchSize, 0,
+                -patchSize + ((double) getScreenHeight() / 4), 0,
                 (random.nextDouble() - 0.5) * 0.6,
                 random.nextDouble() * 3.0 + 1.0,
                 (random.nextDouble() - 0.5) * 6.0,
