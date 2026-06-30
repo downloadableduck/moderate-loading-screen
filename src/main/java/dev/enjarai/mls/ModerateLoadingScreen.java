@@ -5,7 +5,6 @@ import dev.enjarai.mls.config.ModConfig;
 import dev.enjarai.mls.config.ModConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
@@ -115,8 +114,8 @@ public class ModerateLoadingScreen implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientLifecycleEvents.CLIENT_STARTED.register((_) -> {
-            ConfigScreen.create(CONFIG, new ModConfigScreen(id("config"), CONFIG, null));
-        });
+        //ClientLifecycleEvents.CLIENT_STARTED.register((_) -> {
+            //ConfigScreen.create(CONFIG, new ModConfigScreen(id("config"), CONFIG, null));
+        //});
     }
 }

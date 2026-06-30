@@ -42,12 +42,12 @@ dependencies {
     minecraft("com.mojang:minecraft:${property("minecraft_version")}")
     //mappings("net.fabricmc:yarn:${mcVersion}+build.${property("deps.yarn_build")}:v2")
     implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
-    implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
+    //implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")}")
     implementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
-    implementation("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
-        exclude(group = "net.fabricmc.fabric-api")
-    }
+    //implementation("nl.enjarai:cicada-lib:${property("deps.cicada")}") {
+        //exclude(group = "net.fabricmc.fabric-api")
+    //}
     implementation("io.wispforest:owo-lib:${property("deps.owo")}")!!
     include("io.wispforest:owo-sentinel:${property("deps.owo")}")
 

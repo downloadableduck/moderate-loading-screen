@@ -28,9 +28,7 @@
   },
   "depends": {
     "owo-lib": "*",
-    "cicada": ">=0.6.0",
-    "modmenu": "*",
-    "fabric-api": "*"
+    "modmenu": "*"
   },
 
   "accessWidener" : "moderate-loading-screen.accesswidener",
