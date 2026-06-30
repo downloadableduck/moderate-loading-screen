@@ -16,7 +16,7 @@ public record DrawContextWrapper(GuiGraphicsExtractor context) {
     }
 
     public void drawTexturedQuad(Identifier identifier, int x0, int x1, int y0, int y1,
-                                 int alpha) {
+                                 float alpha) {
         ((DrawContextAccessor) context).loadingScreen$drawTexturedQuad(
                 RenderPipelines.GUI_TEXTURED, identifier,
                 x0, x1, y0, y1,
@@ -24,7 +24,7 @@ public record DrawContextWrapper(GuiGraphicsExtractor context) {
         );
     }
 
-    private int calculateColor(int alpha) {
+    private int calculateColor(float alpha) {
         if (alpha < 0) alpha = 0;
         if (alpha > 100) alpha = 100;
 

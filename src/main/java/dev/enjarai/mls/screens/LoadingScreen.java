@@ -99,22 +99,24 @@ public abstract class LoadingScreen {
 
         //147 because anything less makes them flash back in the startup screen, anything more makes them dissappear to quickly
         //in the not startup screen
-        /*if (CONFIG.screenType() == ScreenTypes.SNOWFLAKES) {
-            if (ticksActive >= 450) {
 
+        if (CONFIG.screenType() == ScreenTypes.STACKING)
                 for (Patch patch : patches) {
+                    if (Patch.time >= 100) {
+                        //for some reason seems to operate in reverse, use += to make it go down since im lazy
+                        //nope i fixed it
+                        patch.alpha -= 5F;
+                    }
+                }
+        else {
+            for (Patch patch : patches) {
+                if (Patch.time >= 80) {
                     //for some reason seems to operate in reverse, use += to make it go down since im lazy
                     //nope i fixed it
-                    patch.alpha -= 5;
+                    patch.alpha -= 5F;
                 }
             }
-        } else {
-            if (ticksActive >= 500) {
-                for (Patch patch : patches) {
-                    patch.alpha -=5;
-                }
-            }
-        }*/
+        }
 
         //RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         /*? if <1.21.5*/ /*RenderSystem.enableBlend();*/
@@ -129,10 +131,11 @@ public abstract class LoadingScreen {
 
     protected class Patch {
         protected final Identifier texture;
+        public static float time = 0;
         protected final double horizontal, rotSpeed;
         protected final double scale;
         protected final int patchSize;
-        public int alpha = 100;
+        public float alpha = 100;
         public double fallSpeed;
         protected double x, y, rot;
 
@@ -150,6 +153,7 @@ public abstract class LoadingScreen {
             this.texture = texture;
 
             this.patchSize = patchSize;
+            time = 0;
         }
 
         public void update(float delta) {
@@ -164,6 +168,7 @@ public abstract class LoadingScreen {
             if (this.alpha < 0) {
                 this.alpha = 0;
             }
+            time += 1;
 
             Matrix3x2fStack matrices = wrapper.matrices();
             matrices.pushMatrix();

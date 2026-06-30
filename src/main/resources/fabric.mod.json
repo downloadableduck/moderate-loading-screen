@@ -27,6 +27,7 @@
   "suggests": {
   },
   "depends": {
+    "minecraft": "~26.1",
     "owo-lib": "*",
     "modmenu": "*"
   },
